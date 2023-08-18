@@ -1,118 +1,358 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import { getElectronics, getJewelery, getMens, getWomen } from "shared/product";
+const inter = Inter({ subsets: ["latin"] });
 
-const inter = Inter({ subsets: ['latin'] })
+import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 
-export default function Home() {
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
+import Brand from "widgets/Brands/Brand";
+import HeroCarousel from "widgets/Slider/HeroSlider";
+import Carousel from "widgets/Slider/Slider";
+
+interface User {
+  id: number;
+  title: string;
+  price: string;
+  category: string;
+  description: string;
+  image: string;
+}
+
+interface HomeProps {
+  jewelery: any;
+  mens: any;
+  women: any;
+  electronic: any;
+}
+
+export default function Home({ jewelery, mens, women, electronic }: HomeProps) {
+  const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
+  const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    const storedProductIds = JSON.parse(
+      localStorage.getItem("selectedProductIds") || "[]"
+    );
+    setSelectedProductIds(storedProductIds);
+
+    const storeLikeIds = JSON.parse(
+      localStorage.getItem("selectedLikeIds") || "[]"
+    );
+    setSelectedLikeIds(storeLikeIds);
+  }, []);
+
+  const singleProduct = (evt: any) => {
+    localStorage.setItem("singleId", JSON.stringify(evt));
+  };
+
+  let allCartId;
+  let allLikeId;
+
+  const addToCart = (evt: any) => {
+    let getCartId: any = localStorage.getItem("cartId");
+    if (!getCartId) {
+      allCartId = [evt];
+    } else {
+      allCartId = JSON.parse(getCartId);
+      if (!allCartId.includes(evt)) {
+        allCartId.push(evt);
+      }
+    }
+    localStorage.setItem("cartId", JSON.stringify(allCartId));
+  };
+
+  const addLike = (evt: any) => {
+    let getLikeId = localStorage.getItem("likeId");
+    if (!getLikeId) {
+      allLikeId = [evt];
+    } else {
+      allLikeId = JSON.parse(getLikeId);
+      if (!allLikeId.includes(evt)) {
+        allLikeId.push(evt);
+      }
+    }
+    localStorage.setItem("likeId", JSON.stringify(allLikeId));
+  };
+
+  const handleProductClick = (id: number) => {
+    if (!selectedProductIds.includes(id)) {
+      const updatedProductIds = [...selectedProductIds, id];
+      setSelectedProductIds(updatedProductIds);
+      localStorage.setItem(
+        "selectedProductIds",
+        JSON.stringify(updatedProductIds)
+      );
+    }
+  };
+  const handleLikeClick = (id: number) => {
+    if (!selectedLikeIds.includes(id)) {
+      const updatedProductIds = [...selectedLikeIds, id];
+      setSelectedLikeIds(updatedProductIds);
+      localStorage.setItem(
+        "selectedLikeIds",
+        JSON.stringify(updatedProductIds)
+      );
+    }
+  };
+
+  const jewelerys = jewelery.map((el: any) => {
+    const isSelected = selectedProductIds.includes(el.id);
+    const isSelectedLike = selectedLikeIds.includes(el.id);
+    return (
+      <div
+        className="max-w-[210px] h-[459px]"
+        key={el.id}
+        onClick={() => singleProduct(el.id)}
+      >
+        <Link href="/singleproduct">
+          <Image
+            className="block h-[150px] sm:h-[242px] w-[150px] sm:w-[210px]"
+            src={el.image}
+            width={"210"}
+            height={"242"}
+            alt="card"
+          />
+          <h4 className="font-bold text-[20px]">{el.price} $</h4>
+          <p className="my-2 text-[14px] h-[80px]">{el.title}</p>
+        </Link>
+        <div className="flex  sm:justify-between gap-2">
+          <button
+            className={`  sm:px-2 p-2 sm:py-3 rounded-md flex items-center gap-3 ${
+              isSelected
+                ? "text-black bg-white border border-mainColor p-0"
+                : "bg-mainColor text-white"
+            }`}
+            onClick={() => {
+              addToCart(el.id);
+              handleProductClick(el.id);
+            }}
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+            <AiOutlineShoppingCart size={20} /> Add to Card
+          </button>
+          <button
+            className={`  p-2 sm:px-4 sm:py-3  rounded-md ${
+              isSelectedLike
+                ? "text-black bg-white border border-mainColor"
+                : "bg-mainColor text-white"
+            }`}
+            onClick={() => {
+              addLike(el.id);
+              handleLikeClick(el.id);
+            }}
+          >
+            <AiOutlineHeart
+              size={20}
+              color={isSelectedLike ? "black" : "white"}
             />
-          </a>
+          </button>
         </div>
       </div>
+    );
+  });
+  const men = mens.map((el: any) => {
+    const isSelected = selectedProductIds.includes(el.id);
+    const isSelectedLike = selectedLikeIds.includes(el.id);
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+    return (
+      <div
+        className="max-w-[210px] h-[459px]"
+        key={el.id}
+        onClick={() => singleProduct(el.id)}
+      >
+        <Link href="/singleproduct">
+          <Image
+            className="block h-[150px] sm:h-[242px] w-[150px] sm:w-[210px]"
+            src={el.image}
+            width={"210"}
+            height={"242"}
+            alt="card"
+          />
+          <h4 className="font-bold text-[20px]">{el.price} $</h4>
+          <p className="my-2 text-[14px] h-[80px]">{el.title}</p>
+        </Link>
+        <div className="flex  sm:justify-between gap-2">
+          <button
+            className={`  sm:px-2 p-2 sm:py-3 rounded-md flex items-center gap-3 ${
+              isSelected
+                ? "text-black bg-white border border-mainColor p-0"
+                : "bg-mainColor text-white"
+            }`}
+            onClick={() => {
+              addToCart(el.id);
+              handleProductClick(el.id);
+            }}
+          >
+            <AiOutlineShoppingCart size={20} /> Add to Card
+          </button>
+          <button
+            className={` text-white p-2 sm:px-4 sm:py-3  rounded-md ${
+              isSelectedLike
+                ? "bg-white text-black border border-mainColor"
+                : "bg-mainColor"
+            }`}
+            onClick={() => {
+              addLike(el.id);
+              handleLikeClick(el.id);
+            }}
+          >
+            <AiOutlineHeart
+              size={20}
+              color={isSelectedLike ? "black" : "white"}
+            />
+          </button>
+        </div>
       </div>
+    );
+  });
+  const womens = women.map((el: any) => {
+    const isSelected = selectedProductIds.includes(el.id);
+    const isSelectedLike = selectedLikeIds.includes(el.id);
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+    return (
+      <div
+        className="max-w-[210px] h-[459px]"
+        key={el.id}
+        onClick={() => singleProduct(el.id)}
+      >
+        <Link href="/singleproduct">
+          <Image
+            className="block h-[150px] sm:h-[242px] w-[150px] sm:w-[210px]"
+            src={el.image}
+            width={"210"}
+            height={"242"}
+            alt="card"
+          />
+          <h4 className="font-bold text-[20px]">{el.price} $</h4>
+          <p className="my-2 text-[14px] h-[80px]">{el.title}</p>
+        </Link>
+        <div className="flex  sm:justify-between gap-2">
+          <button
+            className={`  sm:px-2 p-2 sm:py-3 rounded-md flex items-center gap-3 ${
+              isSelected
+                ? "text-black bg-white border border-mainColor p-0"
+                : "bg-mainColor text-white"
+            }`}
+            onClick={() => {
+              addToCart(el.id);
+              handleProductClick(el.id);
+            }}
+          >
+            <AiOutlineShoppingCart size={20} /> Add to Card
+          </button>
+          <button
+            className={` text-white p-2 sm:px-4 sm:py-3  rounded-md ${
+              isSelectedLike
+                ? "bg-white text-black border border-mainColor"
+                : "bg-mainColor"
+            }`}
+            onClick={() => {
+              addLike(el.id);
+              handleLikeClick(el.id);
+            }}
+          >
+            <AiOutlineHeart
+              size={20}
+              color={isSelectedLike ? "black" : "white"}
+            />
+          </button>
+        </div>
+      </div>
+    );
+  });
+  const electronics = electronic.map((el: any) => {
+    const isSelected = selectedProductIds.includes(el.id);
+    const isSelectedLike = selectedLikeIds.includes(el.id);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+    return (
+      <div
+        className="max-w-[210px] h-[459px]"
+        key={el.id}
+        onClick={() => singleProduct(el.id)}
+      >
+        <Link href="/singleproduct">
+          <Image
+            className="block h-[150px] sm:h-[242px] w-[150px] sm:w-[210px]"
+            src={el.image}
+            width={"210"}
+            height={"242"}
+            alt="card"
+          />
+          <h4 className="font-bold text-[20px]">{el.price} $</h4>
+          <p className="my-2 text-[14px] h-[80px]">{el.title}</p>
+        </Link>
+        <div className="flex  sm:justify-between gap-2">
+          <button
+            className={`  sm:px-2 p-2 sm:py-3 rounded-md flex items-center gap-3 ${
+              isSelected
+                ? "text-black bg-white border border-mainColor p-0"
+                : "bg-mainColor text-white"
+            }`}
+            onClick={() => {
+              addToCart(el.id);
+              handleProductClick(el.id);
+            }}
+          >
+            <AiOutlineShoppingCart size={20} /> Add to Card
+          </button>
+          <button
+            className={` text-white p-2 sm:px-4 sm:py-3  rounded-md ${
+              isSelectedLike
+                ? "bg-white text-black border border-mainColor"
+                : "bg-mainColor"
+            }`}
+            onClick={() => {
+              addLike(el.id);
+              handleLikeClick(el.id);
+            }}
+          >
+            <AiOutlineHeart
+              size={20}
+              color={isSelectedLike ? "black" : "white"}
+            />
+          </button>
+        </div>
+      </div>
+    );
+  });
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+  return (
+    <main>
+      {/* <Dropdown /> */}
+      <div className="mb-[100px] mt-8">
+        <HeroCarousel />
+      </div>
+      <div className="flex flex-col justify-center">
+        <h1 className="text-[35px] font-semibold my-5">Jewelry</h1>
+        <Carousel slides={jewelerys} />
+      </div>
+      <div className="flex flex-col justify-center">
+        <h1 className="text-[35px] font-semibold my-5">Mens Clothes</h1>
+        <Carousel slides={men} />
+      </div>
+      <div className="flex flex-col justify-center">
+        <h1 className="text-[35px] font-semibold my-5">Womens clothes</h1>
+        <Carousel slides={womens} />
+      </div>
+      <div className="flex flex-col justify-center">
+        <h1 className="text-[35px] font-semibold my-5">Electronics</h1>
+        <Carousel slides={electronics} />
+      </div>
+      <div>
+        <Brand />
       </div>
     </main>
-  )
+  );
+}
+
+export async function getServerSideProps() {
+  const jewelery: User = await getJewelery();
+  const mens: User = await getMens();
+  const women: User = await getWomen();
+  const electronic: User = await getElectronics();
+
+  return { props: { jewelery, mens, women, electronic } };
 }
