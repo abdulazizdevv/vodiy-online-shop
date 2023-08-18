@@ -3,9 +3,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 
+import Loading from "../../public/loading.svg";
+
 export default function SingleProduct() {
   const [data, setData] = useState<any>(null);
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
 
@@ -73,6 +76,7 @@ export default function SingleProduct() {
           if (json) {
             setShow(true);
           }
+          setLoading(false);
           setData(json);
         })
         .catch((error) => {
@@ -94,11 +98,28 @@ export default function SingleProduct() {
 
   return (
     <>
-      {data ? (
+      {loading ? (
+        <div className="text-center font-semibold text-[32px] h-screen">
+          <Image
+            style={{
+              position: "absolute",
+              top: "0px",
+              bottom: "0px",
+              right: "0px",
+              left: "0px",
+              margin: "auto",
+              width: "200px",
+              height: "200px",
+            }}
+            src={Loading}
+            width={25}
+            height={25}
+            alt="load"
+          />
+        </div>
+      ) : (
         show &&
         data && (
-          // const isSelected = selectedProductIds.includes(data.id),
-
           <div>
             <div className="my-5 mb-6">
               <Link
@@ -218,10 +239,6 @@ export default function SingleProduct() {
             </div>
           </div>
         )
-      ) : (
-        <h1 className="text-center font-semibold text-[32px]">
-          Product not found 🧐
-        </h1>
       )}
     </>
   );

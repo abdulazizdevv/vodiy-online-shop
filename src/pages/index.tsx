@@ -321,7 +321,6 @@ export default function Home({ jewelery, mens, women, electronic }: HomeProps) {
 
   return (
     <main>
-      {/* <Dropdown /> */}
       <div className="mb-[100px] mt-8">
         <HeroCarousel />
       </div>

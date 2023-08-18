@@ -9,7 +9,6 @@ import { ToastContainer, toast } from "react-toastify";
 export default function Cart() {
   const [cards, setCards] = useState<any>([]);
   const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [price, setPrice] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
   const [title, setTitle] = useState<any>("");
@@ -77,10 +76,7 @@ export default function Cart() {
       const fetchPromises = cards.map((i: any) =>
         fetch(`https://fakestoreapi.com/products/${i}`)
           .then((res) => res.json())
-          .then((json) => {
-            setLoading(false);
-            json;
-          })
+          .then((json) => json)
           .catch((err) => console.log(err))
       );
 
@@ -137,9 +133,7 @@ export default function Cart() {
         </Link>
         <p className="capitalize text-grey text-[20px]">Cart</p>
       </div>
-      {
-      
-      cards.length !== 0 ? (
+      {cards.length !== 0 ? (
         <div className="flex flex-wrap gap-10 items-start justify-between mt-[30px]">
           <div>
             {data.map((el: any) => (
