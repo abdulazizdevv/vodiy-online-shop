@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Slider from "react-slick";
 import {
   MdOutlineKeyboardArrowRight,
   MdKeyboardArrowLeft,
 } from "react-icons/md";
-import "./carousel.css";
 import Image from "next/image";
 import HeroPhone from "../../../public/images/heroPhone.png";
 

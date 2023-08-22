@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import { RxExit } from "react-icons/rx";
 
-import "../Dropdown/dropdown.css";
-
 const Dropdown = () => {
   const [token, setToken] = useState(false);
 

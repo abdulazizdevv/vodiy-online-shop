@@ -4,7 +4,7 @@ import {
   MdOutlineKeyboardArrowRight,
   MdKeyboardArrowLeft,
 } from "react-icons/md";
-import "./carousel.css";
+// import "./carousel.css";
 
 interface CarouselProps {
   slides: React.ReactNode[];

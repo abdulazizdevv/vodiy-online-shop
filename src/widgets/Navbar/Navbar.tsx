@@ -10,7 +10,6 @@ import { GrCart } from "react-icons/gr";
 import Image from "next/image";
 import Link from "next/link";
 
-import "../Dropdown/dropdown.css";
 import Categories from "pages/product";
 import Offcanvas from "widgets/offcanvas";
 import { Modal } from "widgets/Modal/Modal";

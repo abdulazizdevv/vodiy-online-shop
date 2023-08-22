@@ -4,7 +4,8 @@ import {
   MdOutlineKeyboardArrowRight,
   MdKeyboardArrowLeft,
 } from "react-icons/md";
-import "./carousel.css";
+// import "./carousel.css";
+// import styles from "../../styles/carousel.module.css";
 
 interface CarouselProps {
   slides: React.ReactNode[];
@@ -50,7 +51,7 @@ const CategorySlider: React.FC<CarouselProps> = ({ slides }) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-        //   centerMode: true,
+          //   centerMode: true,
           arrows: false,
         },
       },

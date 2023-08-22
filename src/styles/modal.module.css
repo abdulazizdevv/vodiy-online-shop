@@ -17,7 +17,7 @@
     z-index: 999;
 }
 
-.modal-wrapper {
+.modal_wrapper {
     position: relative;
     /* width: 50%; */
     height: auto;
@@ -26,19 +26,19 @@
     border-radius: 15px;
 }
 
-.modal-button {
+.modal_button {
     padding: 15px;
     position: absolute;
     top: 0;
     right: 0;
 }
 
-.modal-header {
+.modal_header {
     margin-bottom: 20px;
 }
 
 @media screen and (max-width: 508px) {
-    .modal-wrapper {
+    .modal_wrapper {
         width: 70% !important;
     }
 }

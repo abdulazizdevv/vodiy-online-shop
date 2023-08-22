@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { GrClose } from "react-icons/gr";
-import "./modal.css";
 
 interface ModalProps {
   modal: boolean;
@@ -31,17 +30,17 @@ export const Modal: React.FC<ModalProps> = ({
       onClick={handleOverlay}
       className={`overlay  ${modal ? "open" : ""}`}
     >
-      <div className={`w-[${width}] modal-wrapper`}>
+      <div className={`w-[${width}] modal_wrapper `}>
         <button
           onClick={() => setModal(false)}
-          className="btn btn-dark modal-button rounded-0"
+          className={`btn btn-dark modal_button  rounded-0`}
         >
           <GrClose size={20} />
         </button>
-        <div className="modal-header">
+        <div className={` modal_header`}>
           <h3 className="font-semibold text-[30px]">{title}</h3>
         </div>
-        <div className="modal-content">{children}</div>
+        <div className={`modal-content`}>{children}</div>
       </div>
     </div>
   );
